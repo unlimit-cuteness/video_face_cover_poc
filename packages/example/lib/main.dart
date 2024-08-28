@@ -49,6 +49,7 @@ class Home extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Column(
                 children: [
+                  Image.asset('assets/images/lion.jpeg'),
                   ExpansionTile(
                     title: const Text('Vision APIs'),
                     children: [

@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:math';
+import 'dart:ui' as UI;
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'coordinates_translator.dart';
@@ -9,12 +12,14 @@ import 'coordinates_translator.dart';
 class FaceDetectorPainter extends CustomPainter {
   FaceDetectorPainter(
     this.faces,
+    this.coverFaceImage,
     this.imageSize,
     this.rotation,
     this.cameraLensDirection,
   );
 
   final List<Face> faces;
+  final UI.Image coverFaceImage;
   final Size imageSize;
   final InputImageRotation rotation;
   final CameraLensDirection cameraLensDirection;
@@ -60,10 +65,14 @@ class FaceDetectorPainter extends CustomPainter {
         cameraLensDirection,
       );
 
-      canvas.drawRect(
-        Rect.fromLTRB(left, top, right, bottom),
-        paint1,
-      );
+      // canvas.drawRect(
+      //   Rect.fromLTRB(left, top, right, bottom),
+      //   paint1,
+      // );
+      paintImage(
+          canvas: canvas,
+          rect: Rect.fromLTRB(left, top, right, bottom),
+          image: coverFaceImage);
 
       void paintContour(FaceContourType type) {
         final contour = face.contours[type];
@@ -117,18 +126,30 @@ class FaceDetectorPainter extends CustomPainter {
         }
       }
 
-      for (final type in FaceContourType.values) {
-        paintContour(type);
-      }
+      // for (final type in FaceContourType.values) {
+      //   paintContour(type);
+      // }
 
-      for (final type in FaceLandmarkType.values) {
-        paintLandmark(type);
-      }
+      // for (final type in FaceLandmarkType.values) {
+      //   paintLandmark(type);
+      // }
     }
   }
 
   @override
   bool shouldRepaint(FaceDetectorPainter oldDelegate) {
     return oldDelegate.imageSize != imageSize || oldDelegate.faces != faces;
+  }
+
+  Future<UI.Image> _getUiImage(
+      String imageAssetPath, int height, int width) async {
+    final ByteData assetImageByteData = await rootBundle.load(imageAssetPath);
+    final codec = await UI.instantiateImageCodec(
+      assetImageByteData.buffer.asUint8List(),
+      targetHeight: height,
+      targetWidth: width,
+    );
+    final image = (await codec.getNextFrame()).image;
+    return image;
   }
 }

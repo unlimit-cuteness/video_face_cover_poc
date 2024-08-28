@@ -1,5 +1,8 @@
+import 'dart:ui' as UI;
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 
 import 'detector_view.dart';
@@ -50,10 +53,13 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
       _text = '';
     });
     final faces = await _faceDetector.processImage(inputImage);
+    final blockFaceImage = await _loadImage('assets/images/lion.jpeg');
+
     if (inputImage.metadata?.size != null &&
         inputImage.metadata?.rotation != null) {
       final painter = FaceDetectorPainter(
         faces,
+        blockFaceImage,
         inputImage.metadata!.size,
         inputImage.metadata!.rotation,
         _cameraLensDirection,
@@ -72,5 +78,10 @@ class _FaceDetectorViewState extends State<FaceDetectorView> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Future<UI.Image> _loadImage(String key) async {
+    final data = await rootBundle.load(key);
+    return decodeImageFromList(data.buffer.asUint8List());
   }
 }
