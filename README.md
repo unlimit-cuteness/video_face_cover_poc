@@ -67,3 +67,9 @@ Contributions are welcome.
 In case of any problems look at [existing issues](https://github.com/flutter-ml/google_ml_kit_flutter/issues), if you cannot find anything related to your problem then open an issue.
 Create an issue before opening a [pull request](https://github.com/flutter-ml/google_ml_kit_flutter/pulls) for non trivial fixes.
 In case of trivial fixes open a [pull request](https://github.com/flutter-ml/google_ml_kit_flutter/pulls) directly.
+
+## 얼굴 가리는 코드는 어디에?
+
+우선 packages/example/lib/vision_detector_views 에서 face_detector_view.dart를 보면 된다.
+_processImage 함수를 보면 blockFaceImage를 만들어서 넘겨주는 부분이 나온다. (얼굴을 가릴 이미지)
+그 다음은 FaceDetectorPainter를 보면 되는데 이건 얼굴을 감지하고 그리는 코드가 있는 부분이다. paint 함수안을 보면 paintImage() 를 통해 얼굴이 감지되는 부분을 이미지로 덮어주는 부분이 나온다.
